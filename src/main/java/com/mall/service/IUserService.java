@@ -8,4 +8,8 @@ import com.mall.common.ServerResponse;
  */
 public interface IUserService {
     ServerResponse<User> login(String userName, String password);
+
+    public ServerResponse<String> register(User user);
+
+    public ServerResponse<String> checkValid(String str, String type);
 }

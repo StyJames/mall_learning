@@ -24,11 +24,15 @@ public class UserController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 登陆
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
-    /**
-     * 
-     */
     public ServerResponse<User> login(String userName, String password, HttpSession session) {
         //Service->mybatis->dao
         ServerResponse<User> response = iUserService.login(userName, password);
@@ -37,4 +41,34 @@ public class UserController {
         }
         return response;
     }
+
+    /**
+     * 登出
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "logout.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> logout(HttpSession session) {
+        session.removeAttribute(Const.CURRENT_USER);
+        return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "register.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> register(User user) {
+        return iUserService.register(user);
+    }
+
+    @RequestMapping(value = "checkValid.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> checkValid(String str, String type) {
+        return iUserService.checkValid(str, type);
+    }
+
 }
