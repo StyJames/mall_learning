@@ -11,8 +11,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by james on 2018/6/13.
  */
-public class tokenCache {
-    private static Logger logger = LoggerFactory.getLogger(tokenCache.class);
+public class TokenCache {
+    private static Logger logger = LoggerFactory.getLogger(TokenCache.class);
+
+    public static final String TOKEN_PREFIX = "token_";
 
     //LRU算法
     private static LoadingCache<String, String> localCache =

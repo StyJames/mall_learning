@@ -173,4 +173,14 @@
     and question = #{question}
     and answer = #{answer}
   </select>
+  <update id="updatePasswordByUserName" parameterType="map">
+    UPDATE mmall_user
+    SET password = #{passwordNew}, update_time = now()
+    where userName = #{userName}
+  </update>
+  <select id="checkPassword" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE userId = #{userId} and password = #{password}
+  </select>
 </mapper>
