@@ -2,6 +2,7 @@ package com.mall.service.impl;
 
 import com.mall.common.Const;
 import com.mall.common.ServerResponse;
+import com.mall.common.tokenCache;
 import com.mall.dao.UserMapper;
 import com.mall.pojo.*;
 import com.mall.service.IUserService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.UUID;
 
 /**
  * Created by james on 2018/6/8.
@@ -101,5 +104,29 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMsg("参数错误");
         }
         return ServerResponse.createBySuccessMsg("校验成功");
+    }
+
+    public ServerResponse<String> selectQuestion(String userName) {
+        ServerResponse validResponse = this.checkValid(userName, Const.USERNAME);
+        if (validResponse.isSuccess()) {
+            //用户不存在
+            return ServerResponse.createByErrorMsg("用户不存在");
+        }
+        String question = userMapper.selectQuestionByUserName(userName);
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(question)) {
+            return ServerResponse.createBySuccess(question);
+        }
+        return ServerResponse.createByErrorMsg("密码提示问题为空");
+    }
+
+    public ServerResponse<String> checkAnswer(String userName, String question, String answer) {
+        int resultCount = userMapper.checkAnswer(userName, question, answer);
+        if (resultCount > 0) {
+            //该用户问题已经验证成功
+            String forgetToken = UUID.randomUUID().toString();
+            tokenCache.setKey("token_" + userName, forgetToken);
+            return ServerResponse.createBySuccess(forgetToken);
+        }
+        return ServerResponse.createByErrorMsg("问题回答错误。");
     }
 }
