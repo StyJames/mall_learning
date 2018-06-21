@@ -21,4 +21,6 @@ public interface IUserService {
     public ServerResponse<String> forgetResetPassword(String userName, String passwordNew, String forgetToken);
 
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
+
+
 }
