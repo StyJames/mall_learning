@@ -22,5 +22,5 @@ public interface IUserService {
 
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
 
-
+    public ServerResponse<User> updateInformation(User user);
 }

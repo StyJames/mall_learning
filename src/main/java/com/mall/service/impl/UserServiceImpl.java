@@ -38,7 +38,7 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMsg("用户名不存在");
         }
 
-        //todo 密码登陆MD5
+        // 密码登陆MD5
         String MD5Password = MD5Util.MD5EncodeUtf8(password);
         User user = userMapper.selectLogin(userName, MD5Password);
         if (user == null) {
@@ -172,5 +172,28 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccessMsg("密码更新成功");
         }
         return ServerResponse.createByErrorMsg("密码更新失败");
+    }
+
+    public ServerResponse<User> updateInformation(User user) {
+        //userName不是更新项
+        //email需要校验，校验是否存在，如果存在并且相同的话，不应该进行更新
+        int resultCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
+
+        if (resultCount > 0) {
+            return ServerResponse.createByErrorMsg("email已经存在，请更换email。");
+        }
+
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setAnswer(user.getAnswer());
+        updateUser.setQuestion(user.getQuestion());
+
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("更新信息成功。", updateUser);
+        }
+        return ServerResponse.createByErrorMsg("更新信息失败。");
     }
 }

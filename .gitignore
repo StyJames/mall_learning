@@ -23,7 +23,7 @@ target/
 *.iws
 
 # temp ignore
-
+*.stackdump
 *.log
 *.cache
 *.diff

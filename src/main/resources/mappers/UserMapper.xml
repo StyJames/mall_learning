@@ -301,10 +301,10 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="checkUserName" parameterType="string" resultType="int">
+  <select id="checkUserName" parameterType="string" resultType="java.lang.Integer">
   SELECT count(1) FROM mmall_user WHERE username = #{userName}
   </select>
-  <select id="checkEmail" parameterType="string" resultType="int">
+  <select id="checkEmail" parameterType="string" resultType="java.lang.Integer">
     SELECT count(1) FROM mmall_user WHERE email = #{email}
   </select>
   <select id="selectLogin" parameterType="map" resultMap="BaseResultMap">
@@ -313,11 +313,11 @@
     WHERE username = #{userName}
     and password = #{password}
   </select>
-  <select id="selectQuestionByUserName" parameterType="string" resultType="string">
+  <select id="selectQuestionByUserName" parameterType="string" resultType="java.lang.String">
     SELECT question FROM
     mmall_user where username = #{userName}
   </select>
-  <select id="checkAnswer" parameterType="map" resultType="int">
+  <select id="checkAnswer" parameterType="map" resultType="java.lang.Integer">
     SELECT count(1) FROM mmall_user
     WHERE username = #{userName}
     and question = #{question}
@@ -328,9 +328,15 @@
     SET password = #{passwordNew}, update_time = now()
     where userName = #{userName}
   </update>
-  <select id="checkPassword" parameterType="map" resultType="int">
+  <select id="checkPassword" parameterType="map" resultType="java.lang.Integer">
     SELECT COUNT(1)
     FROM mmall_user
     WHERE userId = #{userId} and password = #{password}
+  </select>
+  <select id="checkEmailByUserId" parameterType="map" resultType="java.lang.Integer">
+    SELECT COUNT(1)
+    FROM mmall_user
+    WHERE email = #{email}
+    and userId != #{userId}
   </select>
 </mapper>

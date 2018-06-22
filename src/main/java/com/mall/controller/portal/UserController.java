@@ -147,4 +147,29 @@ public class UserController {
         return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
 
+    /**
+     * 更新用户信息
+     * @param session
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "updateInformation.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> updateInformation(HttpSession session, User user) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+
+        if (currentUser == null) {
+            return ServerResponse.createByErrorMsg("用户未登陆");
+        }
+
+        user.setId(currentUser.getId());
+        user.setUsername(currentUser.getUsername());
+
+        ServerResponse<User> response = iUserService.updateInformation(user);
+        if (response.isSuccess()) {
+            session.setAttribute(Const.CURRENT_USER, response.getData());
+        }
+        return response;
+    }
+
 }
