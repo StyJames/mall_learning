@@ -1,6 +1,7 @@
 package com.mall.controller.portal;
 
 import com.mall.common.Const;
+import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
 import com.mall.pojo.User;
 import com.mall.service.IUserService;
@@ -47,7 +48,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "logout.do", method = RequestMethod.GET)
+    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session) {
         session.removeAttribute(Const.CURRENT_USER);
@@ -59,7 +60,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "register.do", method = RequestMethod.GET)
+    @RequestMapping(value = "register.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
@@ -71,7 +72,7 @@ public class UserController {
      * @param type
      * @return
      */
-    @RequestMapping(value = "checkValid.do", method = RequestMethod.GET)
+    @RequestMapping(value = "checkValid.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
@@ -82,7 +83,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "getUserInfo.do", method = RequestMethod.GET)
+    @RequestMapping(value = "getUserInfo.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -97,7 +98,7 @@ public class UserController {
      * @param userName
      * @return
      */
-    @RequestMapping(value = "forgetGetQuestion.do", method = RequestMethod.GET)
+    @RequestMapping(value = "forgetGetQuestion.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String userName) {
         return iUserService.selectQuestion(userName);
@@ -110,7 +111,7 @@ public class UserController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "forgetCheckAnswer.do", method = RequestMethod.GET)
+    @RequestMapping(value = "forgetCheckAnswer.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String userName, String question, String answer) {
             return iUserService.checkAnswer(userName, question, answer);
@@ -123,7 +124,7 @@ public class UserController {
      * @param forgetToken
      * @return
      */
-    @RequestMapping(value = "forgetResetPassword.do", method = RequestMethod.GET)
+    @RequestMapping(value = "forgetResetPassword.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String userName, String passwordNew, String forgetToken) {
         return iUserService.forgetResetPassword(userName, passwordNew, forgetToken);
@@ -136,7 +137,7 @@ public class UserController {
      * @param passwordNew
      * @return
      */
-    @RequestMapping(value = "resetPassword.do", method = RequestMethod.GET)
+    @RequestMapping(value = "resetPassword.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -153,7 +154,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "updateInformation.do", method = RequestMethod.GET)
+    @RequestMapping(value = "updateInformation.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> updateInformation(HttpSession session, User user) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
@@ -161,7 +162,6 @@ public class UserController {
         if (currentUser == null) {
             return ServerResponse.createByErrorMsg("用户未登陆");
         }
-
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
 
@@ -172,4 +172,21 @@ public class UserController {
         return response;
     }
 
+    /**
+     * 取得用户信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "getInformation.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<User> getInformation(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(),
+                    "未登录，需要强制登陆，statusCode=10");
+        }
+
+        return iUserService.getInformation(currentUser.getId());
+    }
 }
